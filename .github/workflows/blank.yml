@@ -1,0 +1,33 @@
+name: Java Maven Build
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 20 # You can specify the Java version you need
+
+      - name: Build with Maven
+        run: |
+          cd YOUR_JAVA_APP_DIRECTORY  # Navigate to your Java application directory
+          mvn clean install
+        env:
+          MAVEN_OPTS: "-Dmaven.repo.local=$HOME/.m2/repository"  # Optional: Custom Maven repository location
+
+      - name: Upload JAR artifact
+        if: success()
+        uses: actions/upload-artifact@v2
+        with:
+          name: java-app-artifact
+          path: YOUR_JAVA_APP_DIRECTORY/target/*.jar  # Adjust the path to your built JAR file
